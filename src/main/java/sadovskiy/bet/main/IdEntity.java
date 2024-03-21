@@ -1,10 +1,13 @@
 package sadovskiy.bet.main;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
+
 import java.io.Serializable;
 import java.util.Calendar;
 
@@ -26,26 +29,15 @@ public abstract class IdEntity implements Serializable {
     @Column(updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "en_US")
+    @CreatedDate
     private Calendar created;
 
     @Getter
     @Setter
     @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "en_US")
     private Calendar updated;
-
-    @PreUpdate
-    protected void preUpdate() {
-        updated = Calendar.getInstance();
-    }
-
-    @PrePersist
-    protected void prePersist() {
-        updated = Calendar.getInstance();
-        created = Calendar.getInstance();
-    }
-
-
 
 }
 
