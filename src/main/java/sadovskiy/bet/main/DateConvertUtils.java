@@ -54,6 +54,15 @@ public class DateConvertUtils {
     }
 
 
+
+    public static LocalDateTime asLocalDateTime(String date) {
+        if (date == null)
+            return null;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        return LocalDateTime.parse(date, formatter);
+    }
+
     public static LocalDateTime asLocalDateTime(Date date) {
         return asLocalDateTime(date, ZoneId.systemDefault());
     }

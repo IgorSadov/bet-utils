@@ -12,4 +12,8 @@ public class ActualDataUtils {
         return Year.now().minusYears(1).getValue();
     }
 
+    public static int getPreviousYear(int minusCurrentYear){
+        return Year.now().minusYears(minusCurrentYear).getValue();
+    }
+
 }
