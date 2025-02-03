@@ -1,14 +1,13 @@
 package sadovskiy.bet.main;
 
-import org.springframework.data.domain.Page;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import sadovskiy.bet.data.PageRequestDTO;
 import sadovskiy.bet.data.TableResponse;
 
@@ -31,12 +30,35 @@ public interface AuditableRepository <E extends AuditableEntity> extends JpaRepo
     }
 
 
+    @Transactional
     default Page<E> findSomeEntities(PageRequestDTO request) {
         Specification<E> spec = buildSpecification(request);
         Pageable pageable = createPageable(request);
         return findAll(spec, pageable);
     }
 
+    @Transactional
+    default <D> TableResponse<D> tableResponse(PageRequestDTO request, ModelMapper modelMapper, Class<D> dtoClass) {
+
+        Specification<E> spec = buildSpecification(request);
+        Pageable pageable = createPageable(request);
+
+        Page<E> entityPage = findAll(spec, pageable);
+
+        List<D> dtoList = new ArrayList<>();
+        for (E entity : entityPage.getContent()) {
+            D dto = modelMapper.map(entity, dtoClass);
+            dtoList.add(dto);
+        }
+
+        Page<D> dtoPage = new PageImpl<>(dtoList, pageable, entityPage.getTotalElements());
+
+        return new TableResponse<>(dtoPage);
+    }
+
+
+
+    @Transactional
     default TableResponse<E> tableResponse(PageRequestDTO request) {
         Specification<E> spec = buildSpecification(request);
         Pageable pageable = createPageable(request);
