@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class Transliteration {
+
     public enum TransliterationFormat {
         RU_TO_ENG,
         ENG_TO_RU
